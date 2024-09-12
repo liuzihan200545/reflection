@@ -1,0 +1,3 @@
+/mnt/d/CG/C++/OpenGL/class_model/cmake-build-debug/CMakeFiles/rebuild_cache.dir
+/mnt/d/CG/C++/OpenGL/class_model/cmake-build-debug/CMakeFiles/edit_cache.dir
+/mnt/d/CG/C++/OpenGL/class_model/cmake-build-debug/CMakeFiles/class_model.dir

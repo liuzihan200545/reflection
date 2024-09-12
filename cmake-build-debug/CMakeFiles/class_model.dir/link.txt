@@ -1,0 +1,1 @@
+/usr/bin/c++ -g CMakeFiles/class_model.dir/main.cpp.o -o class_model 
