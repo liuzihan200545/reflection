@@ -45,34 +45,33 @@ template <> struct TypeInfo<T>{    \
 using type = T;
 
 #define FUNCTIONS(...) \
-static constexpr auto functions = make_tuple( \
-    __VA_ARGS__ \
-);
+static constexpr auto functions = make_tuple(__VA_ARGS__);
+
+#define func(F) field_traits{F}
 
 #define VARIABLES(...) \
-static constexpr auto variables = make_tuple( \
-    __VA_ARGS__ \
-);
+static constexpr auto variables = make_tuple(__VA_ARGS__);
+
+#define var(X) field_traits{X}
 
 #define END_CLASS() };
 
 BEGIN_CLASS(Person)
-    FUNCTIONS(&Person::GetMarried,&Person::IsFemale,&Person::IntroduceMySelf)
+    FUNCTIONS(func(&Person::GetMarried),
+              func(&Person::IsFemale),
+              func(&Person::IntroduceMySelf)
+    )
 END_CLASS()
 
 template <class T>
-void test(T content) {
-    if(is_same_v<T,bool>) {
-        cout << "fuck" << endl;
-    }
+auto type_Info() {
+    return TypeInfo<T>{};
 }
 
 int main() {
-    print("Hank");
-    print(true);
-    auto p = Person();
-    print(p);
-    print(typeid(p).name());
+    auto info = type_Info<Person>();
+    print(std::get<0>(info.functions));
+
 }
 
 
