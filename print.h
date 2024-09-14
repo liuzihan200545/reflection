@@ -6,9 +6,9 @@
 
 using namespace std;
 
-template<typename... _Args>
-void println(format_string<_Args...> __fmt, _Args&&... __args){
-    std::cout <<  std::vformat(__fmt.get(), std::make_format_args(__args...)) << "\n";
+template<typename... Args>
+void println(format_string<Args...> _fmt, Args&&... _args){
+    std::cout <<  std::vformat(_fmt.get(), std::make_format_args(_args...)) << "\n";
 }
 
 struct print_counter {

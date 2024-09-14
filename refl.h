@@ -1,7 +1,5 @@
 #pragma once
 
-#include <iostream>
-
 // implement my own type traits library
 namespace my_type_traits {
 
