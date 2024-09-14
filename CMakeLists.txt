@@ -8,4 +8,5 @@ add_executable(class_model main.cpp
         refl.h
         variable_traits.hpp
         function_traits.hpp
-        utils.hpp)
+        utils.hpp
+        loginfo.hpp)

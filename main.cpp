@@ -2,9 +2,11 @@
 #include <string>
 #include "variable_traits.hpp"
 #include "function_traits.hpp"
+#include "loginfo.hpp"
 #include "utils.hpp"
 
 using namespace std;
+using namespace std::string_literals;
 
 bool Func(double d) {
     return true;
@@ -40,24 +42,37 @@ struct TypeInfo {
 
 #define BEGIN_CLASS(T)             \
 template <> struct TypeInfo<T>{    \
-    using type = T;
+using type = T;
+
+#define FUNCTIONS(...) \
+static constexpr auto functions = make_tuple( \
+    __VA_ARGS__ \
+);
+
+#define VARIABLES(...) \
+static constexpr auto variables = make_tuple( \
+    __VA_ARGS__ \
+);
 
 #define END_CLASS() };
 
-#define FUNCTIONS(...) using functions = tuple<__VA_ARGS__>;
-
-#define VARIABLES(...) using variables = tuple<__VA_ARGS__>;
-
 BEGIN_CLASS(Person)
-FUNCTIONS(function_traits<decltype(&Person::IsFemale)>,
-          function_traits<decltype(&Person::IntroduceMySelf)>,
-          function_traits<decltype(&Person::GetMarried)>)
-VARIABLES(variable_traits<decltype(&Person::height)>,
-          variable_traits<decltype(&Person::familyName)>,
-          variable_traits<decltype(&Person::isFemale)>)
+    FUNCTIONS(&Person::GetMarried,&Person::IsFemale,&Person::IntroduceMySelf)
 END_CLASS()
 
-int main() {
-    using type1 = variable_traits<decltype(&Person::familyName)>::clazz;
-    print_type<type1>();
+template <class T>
+void test(T content) {
+    if(is_same_v<T,bool>) {
+        cout << "fuck" << endl;
+    }
 }
+
+int main() {
+    print("Hank");
+    print(true);
+    auto p = Person();
+    print(p);
+    print(typeid(p).name());
+}
+
+

@@ -1,6 +1,5 @@
 #pragma once
 
-#include <type_traits>
 #include <tuple>
 
 namespace detail {
@@ -20,7 +19,7 @@ template <class Func>
 struct function_traits;
 
 template <class Ret,class... Args>
-struct function_traits<Ret(Args...)>
+struct function_traits<Ret(*)(Args...)>
     : detail::basic_function_traits<Ret(Args...)> {
     using type = Ret(Args...);
     using args_with_class = std::tuple<Args...>;
