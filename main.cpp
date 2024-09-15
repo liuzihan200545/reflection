@@ -18,9 +18,11 @@ struct Person final {
     float height;
     bool isFemale;
 
-    void IntroduceMySelf() const {}
+    void IntroduceMySelf() const {
+        std::cout << "Hello World" << endl;
+    }
 
-    bool IsFemale() {
+    bool IsFemale(bool _is_femal) {
         return false;
     }
 
@@ -35,9 +37,6 @@ struct Person final {
         return success;
     }
 
-    static void print_name() {
-
-    }
 };
 
 template<class T>
@@ -63,8 +62,7 @@ static constexpr auto variables = make_tuple(__VA_ARGS__);
 BEGIN_CLASS(Person)
     FUNCTIONS(func(&Person::GetMarried),
               func(&Person::IsFemale),
-              func(&Person::IntroduceMySelf),
-              func(&Person::print_name)
+              func(&Person::IntroduceMySelf)
     )
 END_CLASS()
 
@@ -90,13 +88,20 @@ constexpr void static_for(auto _func) {
 }
 
 int main() {
+
     constexpr auto info = type_Info<Person>();
 
-    print(std::get<3>(info.functions).name);
+    auto person = Person();
+    auto instance = &person;
 
     static_for<0,3>([=](auto x) {
-        print(std::get<x.value>(info.functions).name);
+        constexpr string_view _name = std::get<x.value>(info.functions).name;
+            auto _ptr = std::get<x.value>(info.functions).pointer;
+            if constexpr (_name == "&Person::IntroduceMySelf") {
+                (instance->*_ptr)();
+            }
     });
+
 }
 
 

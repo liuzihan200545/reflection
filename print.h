@@ -59,6 +59,7 @@ void print(T content) {
     }
 }
 
+// print mutiple variables with space be the spliter
 template <class ... Args>
 void print_elements_with_space(Args ... args) {
     auto func = [=](auto x) {
