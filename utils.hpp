@@ -117,8 +117,9 @@ inline constexpr bool my_is_function_v = my_is_function<T>::value;
 
 template <class T>
 struct field_traits : public basic_field_traits<T,my_is_function_v<T>>{
-    constexpr field_traits(T&& pointer) : pointer(pointer){}
+    constexpr field_traits(T&& pointer,string_view name) : pointer(pointer),name(name){}
     T pointer;
+    string_view name;
 };
 
 // Check if the type can be printed out by cout
@@ -137,6 +138,9 @@ public:
 template <class T>
 static constexpr bool has_insertion_operator_v = has_insertion_operator<T>::value;
 
-
+template <int N>
+struct Intergral_constant {
+    constexpr static int value = N;
+};
 
 

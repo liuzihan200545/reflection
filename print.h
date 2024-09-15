@@ -57,6 +57,19 @@ void print(T content) {
         auto ret = format("The {} type doesn't support the 'cout <<' operation.", type_impl<T>::get_info_s());
         std::cout << ret << std::endl;
     }
+}
 
-
+template <class ... Args>
+void print_elements_with_space(Args ... args) {
+    auto func = [=](auto x) {
+        using type = decltype(x);
+        if constexpr (has_insertion_operator_v<type>) {
+            cout << x ;
+        }
+        else {
+            auto ret = format("The {} type doesn't support the 'cout <<' operation.", type_impl<type>::get_info_s());
+            cerr << ret ;
+        }
+    };
+    ((func(args),cout << " ") , ...);
 }
