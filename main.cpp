@@ -84,7 +84,6 @@ constexpr void static_for(auto _func) {
         return;
     }
     else {
-        // TODO: compile time num struct
         _func(Intergral_constant<Beg>{});
         static_for<Beg+1,End>(_func);
     }
