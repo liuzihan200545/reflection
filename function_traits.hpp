@@ -24,6 +24,7 @@ struct function_traits<Ret(*)(Args...)>
     using type = Ret(Args...);
     using args_with_class = std::tuple<Args...>;
     using pointer = Ret(*)(Args...);
+    static constexpr int param_count = std::tuple_size_v<args_with_class>;
     static constexpr bool is_member = false;
     static constexpr bool is_const = false;
 };
@@ -33,6 +34,7 @@ struct function_traits<Ret(Class::*)(Args...)>
     : detail::basic_function_traits<Ret(Args...)> {
     using type = Ret(Class::*)(Args...);
     using args_with_class = std::tuple<Class*,Args...>;
+    static constexpr int param_count = std::tuple_size_v<args_with_class> - 1;
     using pointer = Ret(Class::*)(Args...);
     static constexpr bool is_member = true;
     static constexpr bool is_const = false;
@@ -44,6 +46,7 @@ struct function_traits<Ret(Class::*)(Args...) const >
     using type = Ret(Class::*)(Args...) const ;
     using args_with_class = std::tuple< const Class*,Args...>;
     using pointer = Ret(Class::*)(Args...) const;
+    static constexpr int param_count = std::tuple_size_v<args_with_class> - 1;
     static constexpr bool is_member = true;
     static constexpr bool is_const = true;
 };

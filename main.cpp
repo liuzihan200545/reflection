@@ -1,9 +1,12 @@
+#include <random>
+
 #include "print.h"
 #include <string>
 #include "variable_traits.hpp"
 #include "function_traits.hpp"
 #include "loginfo.hpp"
 #include "utils.hpp"
+#include "magic_enum.hpp"
 
 using namespace std;
 using namespace std::string_literals;
@@ -18,11 +21,12 @@ struct Person final {
     float height;
     bool isFemale;
 
-    void IntroduceMySelf() const {
-        std::cout << "Hello World" << endl;
+    void IntroduceMySelf(int a,int b) const {
+        print_elements_with_space(a,b);
     }
 
     bool IsFemale(bool _is_femal) {
+        print(false);
         return false;
     }
 
@@ -87,6 +91,21 @@ constexpr void static_for(auto _func) {
     }
 }
 
+template <size_t... Idx, class Tuple>
+int Visit(Tuple tuple,index_sequence<Idx...>) {
+    int num = 0;
+    ((num += std::get<Idx>(tuple)) , ...);
+    return num;
+}
+
+struct Test {
+public:
+    Test(int age,string name) : age(age),name(name.substr(2)) {
+    }
+    int age;
+    string name;
+};
+
 int main() {
 
     constexpr auto info = type_Info<Person>();
@@ -94,14 +113,28 @@ int main() {
     auto person = Person();
     auto instance = &person;
 
-    static_for<0,3>([=](auto x) {
+    constexpr size_t length = tuple_size_v<decltype(info.functions)>;
+
+    static_for<0,length>([=](auto x) {
         constexpr string_view _name = std::get<x.value>(info.functions).name;
+        auto function = std::get<x.value>(info.functions);
+        constexpr int _length = std::get<x.value>(info.functions).param_count;
             auto _ptr = std::get<x.value>(info.functions).pointer;
-            if constexpr (_name == "&Person::IntroduceMySelf") {
-                (instance->*_ptr)();
+            if constexpr (_length == 1 && std::is_same_v<typename decltype(function)::args_with_class,std::tuple<Person*,bool>>) {
+                (instance->*_ptr)(true);
+                cout << "\n";
             }
     });
 
+    auto functions = info.functions;
+
+    auto number = Intergral_constant<tuple_size_v<decltype(functions)>>{};
+
+    auto tuple = std::tuple(1,2,3,4,5,6,7);
+    auto ret = Visit(tuple,make_index_sequence<number.value>());
+    print(ret);
+
+    generic_log(log_level::INFO,"{}"s,11);
 }
 
 

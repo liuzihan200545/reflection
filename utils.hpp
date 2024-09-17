@@ -13,14 +13,14 @@ struct type_impl {
     static constexpr void get_info() {
         string s = __PRETTY_FUNCTION__;
         unsigned long pos = s.find("with T = ") + 9;
-        unsigned long pos1 = s.find(';');
+        unsigned long pos1 = s.find_last_of(";]");
         cout << s.substr(pos,pos1-pos) << endl;
     }
 
     static constexpr string get_info_s() {
         string s = __PRETTY_FUNCTION__;
         unsigned long pos = s.find("with T = ") + 9;
-        unsigned long pos1 = s.find(';');
+        unsigned long pos1 = s.find_last_of(";]");
         return s.substr(pos,pos1-pos);
     }
 };
@@ -142,5 +142,11 @@ template <int N>
 struct Intergral_constant {
     constexpr static int value = N;
 };
+
+template <class _Tp,_Tp val>
+struct compile_constant {
+    constexpr static _Tp value = val;
+};
+
 
 
