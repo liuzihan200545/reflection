@@ -148,5 +148,16 @@ struct compile_constant {
     constexpr static _Tp value = val;
 };
 
+template <int Beg,int End>
+constexpr void static_for(auto _func) {
+    if constexpr (Beg == End) {
+        return;
+    }
+    else {
+        _func(Intergral_constant<Beg>{});
+        static_for<Beg+1,End>(_func);
+    }
+}
+
 
 

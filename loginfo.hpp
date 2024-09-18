@@ -16,7 +16,7 @@ f(ERROR)
 
 #define _FUNCTION(x) x,
 
-enum class log_level : u_int8_t{
+enum log_level{
     foreach_log_level(_FUNCTION)
 };
 
@@ -58,7 +58,7 @@ template <class... Args>
 void log(const with_source_location& loc, Args&&... args) {
     try {
         string formatted = std::vformat(loc.fmt(), std::make_format_args(std::forward<Args>(args)...));
-        std::cout << formatted << " [" << loc.loc().function_name() << "]" << std::endl;
+        std::cout << formatted << std::endl;
     } catch (const std::format_error& e) {
         std::cerr << "Format error: " << e.what() << std::endl;
     }
@@ -67,8 +67,11 @@ void log(const with_source_location& loc, Args&&... args) {
 template <class... Args>
 inline void generic_log(log_level level,const with_source_location&& loc, Args&&... args) {
     if(level >= project_log_level::_log_level) {
+        std::cout << format("[{}]  func:[{}]  ",get_int_name_dynamic(level),loc.loc().function_name());
         log(loc,args...);
-        print(loc.loc().function_name());
+
+        // TODO: support print out the log level
+
         //cout << format("[{}]",get_enum_name_dynamic(level)) << endl;
     }
 }
