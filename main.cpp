@@ -80,17 +80,6 @@ auto function() -> int {
     return N;
 }
 
-/*emplate <int Beg,int End>
-constexpr void static_for(auto _func) {
-    if constexpr (Beg == End) {
-        return;
-    }
-    else {
-        _func(Intergral_constant<Beg>{});
-        static_for<Beg+1,End>(_func);
-    }
-}*/
-
 template <size_t... Idx, class Tuple>
 int Visit(Tuple tuple,index_sequence<Idx...>) {
     int num = 0;
@@ -98,21 +87,6 @@ int Visit(Tuple tuple,index_sequence<Idx...>) {
     return num;
 }
 
-struct Test {
-public:
-    Test(int age,string name) : age(age),name(name.substr(2)) {
-    }
-    int age;
-    string name;
-};
-
-
-
-void test() {
-
-    log_DEBUG("Hello{}"s,11);
-
-}
 
 int main() {
 
@@ -140,23 +114,7 @@ int main() {
 
     auto tuple = std::tuple(1,2,3,4,5,6,7);
     auto ret = Visit(tuple,make_index_sequence<number.value>());
-    print(ret);
 
-    generic_log(log_level::INFO,"{}"s,11);
-
-    /*print(enum_refl_static<Color,Color::RED>());
-    print(enum_refl_static<log_level,log_level::INFO>());*/
-
-    print(get_type_name<log_level>());
-    //print(get_int_name_dynamic(log_level::INFO));
-
-    print(get_int_name_dynamic(log_level::INFO));
-
-    log_DEBUG("ppppp"s);
-
-    log_ERROR("ppppp"s);
-
-    test();
 }
 
 

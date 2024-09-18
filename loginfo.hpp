@@ -69,10 +69,6 @@ inline void generic_log(log_level level,const with_source_location&& loc, Args&&
     if(level >= project_log_level::_log_level) {
         std::cout << format("[{}]  func:[{}]  ",get_int_name_dynamic(level),loc.loc().function_name());
         log(loc,args...);
-
-        // TODO: support print out the log level
-
-        //cout << format("[{}]",get_enum_name_dynamic(level)) << endl;
     }
 }
 
