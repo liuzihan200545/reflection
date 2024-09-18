@@ -39,13 +39,13 @@ log_level project_log_level::_log_level = log_level::DEBUG;
 struct with_source_location {
 private:
     source_location m_loc;
-    string m_inner;
+    const char * m_inner;
 
 public:
-    with_source_location(string inner, source_location loc = source_location::current())
-        : m_loc(loc), m_inner(move(inner)) {}
+    with_source_location(const char * inner, source_location loc = source_location::current())
+        : m_loc(loc), m_inner(inner) {}
 
-    const string& fmt() const {
+    const char * fmt() const {
         return m_inner;
     }
 

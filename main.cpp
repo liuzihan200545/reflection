@@ -115,6 +115,7 @@ int main() {
     auto tuple = std::tuple(1,2,3,4,5,6,7);
     auto ret = Visit(tuple,make_index_sequence<number.value>());
 
+    log_DEBUG("Project {}","Completed");
 }
 
 
