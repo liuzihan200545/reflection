@@ -73,4 +73,5 @@ void print_elements_with_space(Args ... args) {
         }
     };
     ((func(args),cout << " ") , ...);
+    std::cout << "\n";
 }

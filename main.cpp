@@ -2,23 +2,25 @@
 
 #include "print.h"
 #include <string>
+#include "loginfo.hpp"
+#include "reflection.hpp"
 #include "variable_traits.hpp"
 #include "function_traits.hpp"
-#include "loginfo.hpp"
-#include "utils.hpp"
 
 using namespace std;
 using namespace std::string_literals;
-
-bool Func(double d) {
-    return true;
-}
 
 struct Person final {
 
     string familyName;
     float height;
     bool isFemale;
+
+    Person(string _name,float _height,bool _isfemale) {
+        familyName = _name;
+        height = _height;
+        isFemale = _isfemale;
+    }
 
     void IntroduceMySelf(int a,int b) const {
         print_elements_with_space(a,b);
@@ -42,48 +44,14 @@ struct Person final {
 
 };
 
-template<class T>
-struct TypeInfo {
-};
-
-#define BEGIN_CLASS(T)             \
-template <> struct TypeInfo<T>{    \
-using type = T;
-
-#define FUNCTIONS(...) \
-static constexpr auto functions = make_tuple(__VA_ARGS__); \
-static constexpr int func_num = std::tuple_size_v<decltype(functions)>;
-
-#define func(F) field_traits{F,#F}
-
-#define VARIABLES(...) \
-static constexpr auto variables = make_tuple(__VA_ARGS__); \
-static constexpr int var_num = std::tuple_size_v<decltype(variables)>;
-
-#define var(X) field_traits{X,#X}
-
-#define END_CLASS() };
-
 BEGIN_CLASS(Person)
-    FUNCTIONS(func(&Person::GetMarried),
-              func(&Person::IsFemale),
-              func(&Person::IntroduceMySelf)
-    )
+    FUNCTIONS(func(&Person::IntroduceMySelf))
+
     VARIABLES(var(&Person::height),
               var(&Person::familyName),
               var(&Person::isFemale)
               )
 END_CLASS()
-
-template <class T>
-constexpr auto type_Info() {
-    return TypeInfo<T>{};
-}
-
-template <int N>
-auto function() -> int {
-    return N;
-}
 
 template <size_t... Idx, class Tuple,class Func>
 void VisitTuple(Tuple tuple,std::index_sequence<Idx...>,Func&& f) {
@@ -94,7 +62,7 @@ int main() {
 
     constexpr auto info = type_Info<Person>();
 
-    auto person = Person();
+    auto person = Person("Hank",19,false);
     auto instance = &person;
 
     constexpr size_t length = tuple_size_v<decltype(info.functions)>;
@@ -124,15 +92,14 @@ int main() {
 
     VisitTuple(info.functions,make_index_sequence<info.func_num>(),
         [&](auto&& obj) {
-            print(obj.param_count);
+            //print(obj.param_count);
+            obj.invoke(instance,1,2);
         });
 
     VisitTuple(info.variables,make_index_sequence<info.var_num>(),
         [&](auto&& obj) {
-            auto ptr = obj.pointer;
-            print(instance->*ptr);
+            print(obj.invoke(instance));
         });
-
 
 }
 

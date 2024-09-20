@@ -10,4 +10,5 @@ add_executable(class_model main.cpp
         function_traits.hpp
         utils.hpp
         loginfo.hpp
-        magic_enum.hpp)
+        magic_enum.hpp
+        reflection.hpp)

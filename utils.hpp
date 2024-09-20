@@ -120,6 +120,17 @@ struct field_traits : public basic_field_traits<T,my_is_function_v<T>>{
     constexpr field_traits(T&& pointer,string_view name) : pointer(pointer),name(name){}
     T pointer;
     string_view name;
+
+    template <class _T, class ... Args>
+    auto invoke(_T* instance ,Args&& ... args) {
+        if constexpr (my_is_function_v<T>) {
+            (instance->*pointer)(args...);
+        }
+        else {
+            return instance->*pointer;
+        }
+    }
+
 };
 
 // Check if the type can be printed out by cout
