@@ -6,7 +6,6 @@
 #include "function_traits.hpp"
 #include "loginfo.hpp"
 #include "utils.hpp"
-#include "magic_enum.hpp"
 
 using namespace std;
 using namespace std::string_literals;
@@ -52,12 +51,14 @@ template <> struct TypeInfo<T>{    \
 using type = T;
 
 #define FUNCTIONS(...) \
-static constexpr auto functions = make_tuple(__VA_ARGS__);
+static constexpr auto functions = make_tuple(__VA_ARGS__); \
+static constexpr int func_num = std::tuple_size_v<decltype(functions)>;
 
 #define func(F) field_traits{F,#F}
 
 #define VARIABLES(...) \
-static constexpr auto variables = make_tuple(__VA_ARGS__);
+static constexpr auto variables = make_tuple(__VA_ARGS__); \
+static constexpr int var_num = std::tuple_size_v<decltype(variables)>;
 
 #define var(X) field_traits{X,#X}
 
@@ -68,6 +69,10 @@ BEGIN_CLASS(Person)
               func(&Person::IsFemale),
               func(&Person::IntroduceMySelf)
     )
+    VARIABLES(var(&Person::height),
+              var(&Person::familyName),
+              var(&Person::isFemale)
+              )
 END_CLASS()
 
 template <class T>
@@ -80,13 +85,10 @@ auto function() -> int {
     return N;
 }
 
-template <size_t... Idx, class Tuple>
-int Visit(Tuple tuple,index_sequence<Idx...>) {
-    int num = 0;
-    ((num += std::get<Idx>(tuple)) , ...);
-    return num;
+template <size_t... Idx, class Tuple,class Func>
+void VisitTuple(Tuple tuple,std::index_sequence<Idx...>,Func&& f) {
+    (f(std::get<Idx>(tuple)) , ...);
 }
-
 
 int main() {
 
@@ -97,25 +99,41 @@ int main() {
 
     constexpr size_t length = tuple_size_v<decltype(info.functions)>;
 
-    static_for<0,length>([=](auto x) {
+    /*static_for<0,length>([=](auto x) {
         constexpr string_view _name = std::get<x.value>(info.functions).name;
         auto function = std::get<x.value>(info.functions);
         constexpr int _length = std::get<x.value>(info.functions).param_count;
-            auto _ptr = std::get<x.value>(info.functions).pointer;
-            if constexpr (_length == 1 && std::is_same_v<typename decltype(function)::args_with_class,std::tuple<Person*,bool>>) {
-                (instance->*_ptr)(true);
-                cout << "\n";
-            }
-    });
+        auto _ptr = std::get<x.value>(info.functions).pointer;
+        if constexpr (_length == 1 && std::is_same_v<typename decltype(function)::args_with_class,std::tuple<Person*,bool>>) {
+            (instance->*_ptr)(true);
+        }
+    });*/
 
-    auto functions = info.functions;
+
+
+    /*auto functions = info.functions;
 
     auto number = Intergral_constant<tuple_size_v<decltype(functions)>>{};
 
     auto tuple = std::tuple(1,2,3,4,5,6,7);
     auto ret = Visit(tuple,make_index_sequence<number.value>());
 
-    log_DEBUG("Project {}","Completed");
+    log_DEBUG("Project {}","Completed");*/
+
+
+
+    VisitTuple(info.functions,make_index_sequence<info.func_num>(),
+        [&](auto&& obj) {
+            print(obj.param_count);
+        });
+
+    VisitTuple(info.variables,make_index_sequence<info.var_num>(),
+        [&](auto&& obj) {
+            auto ptr = obj.pointer;
+            print(instance->*ptr);
+        });
+
+
 }
 
 
