@@ -1,11 +1,12 @@
-#include <random>
-
 #include "print.h"
 #include <string>
 #include "loginfo.hpp"
 #include "reflection.hpp"
 #include "variable_traits.hpp"
 #include "function_traits.hpp"
+#include "magic_enum.hpp"
+#include "dynamic_refl/refl.h"
+#include "my_stl/function.hpp"
 
 using namespace std;
 using namespace std::string_literals;
@@ -16,7 +17,7 @@ struct Person final {
     float height;
     bool isFemale;
 
-    Person(string _name,float _height,bool _isfemale) {
+    Person(const string& _name,float _height,bool _isfemale) {
         familyName = _name;
         height = _height;
         isFemale = _isfemale;
@@ -58,7 +59,23 @@ void VisitTuple(Tuple tuple,std::index_sequence<Idx...>,Func&& f) {
     (f(std::get<Idx>(tuple)) , ...);
 }
 
-int main() {
+enum Kind {
+    Int8,
+    Int16,
+    Int32,
+    Int64,
+    Int128,
+    Float,
+    Double,
+};
+
+struct Test {
+    Test() {
+        log_DEBUG("test{}",100);
+    }
+};
+
+/*int main() {
 
     constexpr auto info = type_Info<Person>();
 
@@ -75,7 +92,7 @@ int main() {
         if constexpr (_length == 1 && std::is_same_v<typename decltype(function)::args_with_class,std::tuple<Person*,bool>>) {
             (instance->*_ptr)(true);
         }
-    });*/
+    });#1#
 
 
 
@@ -86,7 +103,7 @@ int main() {
     auto tuple = std::tuple(1,2,3,4,5,6,7);
     auto ret = Visit(tuple,make_index_sequence<number.value>());
 
-    log_DEBUG("Project {}","Completed");*/
+    log_DEBUG("Project {}","Completed");#1#
 
 
 
@@ -100,6 +117,26 @@ int main() {
         [&](auto&& obj) {
             print(obj.invoke(instance));
         });
+
+    // TODO:了解 enum class 与 enum 区别
+    print(get_int_name_dynamic(Kind::Float));
+    Kind kind = Kind::Double;
+    print(get_int_name_dynamic(kind));
+    //print(Numeric::get_Type(n).kind);
+
+    Test();
+
+}*/
+
+void foo() {
+    print("Hello World!");
+}
+
+int main() {
+    project_log_level::set_log_level(log_level::INFO);
+    auto function = Function<void()>(foo);
+
+    function();
 
 }
 

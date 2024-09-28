@@ -28,7 +28,7 @@ private:
 int print_counter::n = 0;
 
 template <class T>
-void print(T content) {
+void print(T&& content) {
 
     if constexpr (has_insertion_operator_v<T>) {
         if constexpr (std::is_same_v<T,bool>) {

@@ -1,6 +1,5 @@
 #pragma once
 
-#include <iostream>
 #include <string>
 #include "utils.hpp"
 
@@ -8,6 +7,15 @@ using namespace std;
 
 template <class T>
 string get_type_name() {
+    string s = __PRETTY_FUNCTION__;
+    auto pos = s.find("T = ");
+    pos += 4;
+    auto pos2 = s.find_first_of(";]",pos);
+    return s.substr(pos,pos2 - pos);
+}
+
+template <class T>
+string get_type_name_dynamic(T t) {
     string s = __PRETTY_FUNCTION__;
     auto pos = s.find("T = ");
     pos += 4;
